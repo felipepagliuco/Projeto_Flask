@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, session, flash, url_for
-from alura_flask.dao import JogoDao
+from alura_flask.dao import JogoDao,UsuarioDao
 from flask_mysqldb import MySQL
 from alura_flask.models import Jogo,Usuario
 
@@ -14,22 +14,23 @@ app.config['MYSQL_PORT'] = 3306
 
 db = MySQL(app)
 jogo_dao = JogoDao(db)
+usuario_dao = UsuarioDao(db)
 
-usuario1 = Usuario('luan', 'Luan Marques', '1234')
-usuario2 = Usuario('Nico', 'Nico Steppat', '7a1')
-usuario3 = Usuario('flavio', 'flavio Almeida', 'javascript')
+# usuario1 = Usuario('luan', 'Luan Marques', '1234')
+# usuario2 = Usuario('Nico', 'Nico Steppat', '7a1')
+# usuario3 = Usuario('flavio', 'flavio Almeida', 'javascript')
 
-usuarios = {usuario1.id: usuario1,
-            usuario2.id: usuario2,
-            usuario3.id: usuario3}
+# usuarios = {usuario1.id: usuario1,
+#             usuario2.id: usuario2,
+#             usuario3.id: usuario3}
 
-
-jogo1 = Jogo('Super Mario', 'Ação', 'SNES')
-jogo2 = Jogo('Pokemon Gold', 'RPG', 'GBA')
-lista = [jogo1, jogo2]
+# jogo1 = Jogo('Super Mario', 'Ação', 'SNES')
+# jogo2 = Jogo('Pokemon Gold', 'RPG', 'GBA')
+# lista = [jogo1, jogo2]
 
 @app.route('/')
 def index():
+    lista = jogo_dao.listar()
     return render_template('lista.html', titulo='Jogos', jogos=lista)
 
 @app.route('/novo')
@@ -48,6 +49,23 @@ def criar():
     jogo_dao.salvar(jogo)
     return redirect(url_for('index'))
 
+@app.route('/editar/<int:id>')
+def editar(id):
+    if 'usuario_logado' not in session or session['usuario_logado'] == None:
+        return redirect(url_for('login', proxima=url_for('editar')))
+    jogo = jogo_dao.busca_por_id(id)
+    return render_template('editar.html', titulo='Editando Jogo', jogo=jogo)
+
+@app.route('/atualizar', methods=['POST',])
+def atualizar():
+    nome = request.form['nome']
+    categoria = request.form['categoria']
+    console = request.form['console']
+    id = request.form['id']
+    jogo = Jogo(nome, categoria, console, id)
+    # lista.append(jogo)
+    jogo_dao.salvar(jogo)
+    return redirect(url_for('index'))
 
 @app.route('/login')
 def login():
@@ -57,8 +75,8 @@ def login():
 
 @app.route('/autenticar', methods=['POST', ])
 def autenticar():
-    if request.form['usuario'] in usuarios:
-        usuario = usuarios[request.form['usuario']]
+    usuario = usuario_dao.buscar_por_id(request.form['usuario'])
+    if usuario:
         if usuario.senha == request.form['senha']:
             session['usuario_logado'] = usuario.id
             flash(usuario.nome + ' logou com sucesso!')
@@ -74,6 +92,5 @@ def logout():
     session['usuario_logado'] = None
     flash('Nenhum usuário logado!')
     return redirect(url_for('index'))
-
 
 app.run(debug=True)
