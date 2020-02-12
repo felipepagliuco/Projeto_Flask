@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, session, flash, url
 from alura_flask.dao import JogoDao,UsuarioDao
 from flask_mysqldb import MySQL
 from alura_flask.models import Jogo,Usuario
+import os
 
 app = Flask(__name__)
 app.secret_key = 'alura'
@@ -11,6 +12,8 @@ app.config['MYSQL_USER'] = "root"
 app.config['MYSQL_PASSWORD'] = "123456"
 app.config['MYSQL_DB'] = "jogoteca"
 app.config['MYSQL_PORT'] = 3306
+app.config['UPLOAD_PATH'] = os.path.dirname(os.path.abspath(__file__)) \
+                            + '/uploads'
 
 db = MySQL(app)
 jogo_dao = JogoDao(db)
@@ -46,7 +49,10 @@ def criar():
     console = request. form['console']
     jogo = Jogo(nome, categoria, console)
     #lista.append(jogo)
-    jogo_dao.salvar(jogo)
+    jogo = jogo_dao.salvar(jogo)
+    arquivo = request.files['arquivo']
+    upload_path = app.config['UPLOAD_PATH']
+    arquivo.save(f'{upload_path}/capa{jogo.id}.jpg')
     return redirect(url_for('index'))
 
 @app.route('/editar/<int:id>')
@@ -66,6 +72,13 @@ def atualizar():
     # lista.append(jogo)
     jogo_dao.salvar(jogo)
     return redirect(url_for('index'))
+
+@app.route('/deletar/<int:id>')
+def deletar(id):
+    jogo_dao.deletar(id)
+    flash('O jogo foi excluído!')
+    return redirect(url_for('index'))
+
 
 @app.route('/login')
 def login():
