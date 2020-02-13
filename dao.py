@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 from python.flask_curso_alura.models import Jogo,Usuario
+=======
+from alura_flask.models import Jogo,Usuario
+>>>>>>> 2eb3ff8c3a13b98bf692afa1d91294f2f0991148
 
 SQL_DELETA_JOGO = 'delete from jogo where id = %s'
 SQL_JOGO_POR_ID = 'SELECT id, nome, categoria, console from jogo where id = %s'

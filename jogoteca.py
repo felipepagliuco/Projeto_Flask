@@ -1,9 +1,17 @@
 from flask import Flask, render_template, request, redirect, session, flash, url_for
+<<<<<<< HEAD
 from python.flask_curso_alura.dao import JogoDao,UsuarioDao
 from flask_mysqldb import MySQL
 from python.flask_curso_alura.models import Jogo,Usuario
 import os
 #git1
+=======
+from alura_flask.dao import JogoDao,UsuarioDao
+from flask_mysqldb import MySQL
+from alura_flask.models import Jogo,Usuario
+import os
+
+>>>>>>> 2eb3ff8c3a13b98bf692afa1d91294f2f0991148
 app = Flask(__name__)
 app.secret_key = 'alura'
 
