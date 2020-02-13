@@ -3,7 +3,7 @@ from alura_flask.dao import JogoDao,UsuarioDao
 from flask_mysqldb import MySQL
 from alura_flask.models import Jogo,Usuario
 import os
-
+#fazendoooo o commit de teste!
 app = Flask(__name__)
 app.secret_key = 'alura'
 
