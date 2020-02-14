@@ -79,6 +79,9 @@ def atualizar():
     jogo = Jogo(nome, categoria, console, id)
     # lista.append(jogo)
     jogo_dao.salvar(jogo)
+    arquivo = request.files['arquivo']
+    upload_path = app.config['UPLOAD_PATH']
+    arquivo.save(f'{upload_path}/capa{jogo.id}.jpg')
     return redirect(url_for('index'))
 
 
