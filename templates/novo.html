@@ -1,6 +1,8 @@
 {% extends "template.html" %}
 {% block conteudo %}
     <form action="{{ url_for('criar') }}" method="post" enctype="multipart/form-data">
+
+
         <fieldset>
           <div class="form-group">
             <label for="nome">Nome</label>
@@ -14,9 +16,15 @@
             <label for="console">Console</label>
             <input type="text" id="console" name="console" class="form-control">
           </div>
-          <div class="input-lg">
-              <input type="file" name="arquivo" accept="image/jpeg">
-          </div>
+          <figure>
+            <figcaption>
+                <label>
+                     <div class="input-lg">
+                        <input type="file" name="arquivo" accept="image/jpeg">
+                     </div>
+                </label>
+            </figcaption>
+          </figure>
           <button type="submit" class="btn btn-primary btn-salvar">Salvar</button>
             <a class="btn alert-danger" href="{{url_for('index')}}">Voltar</a>
         </fieldset>
