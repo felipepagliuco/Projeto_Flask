@@ -1,6 +1,6 @@
 import os, sys
 
-from flask import Flask, render_template, request, redirect, session, flash, url_for
+from flask import Flask, render_template, request, redirect, session, flash, url_for, send_from_directory
 from flask_mysqldb import MySQL
 from dao import JogoDao, UsuarioDao
 from models import Usuario,Jogo
@@ -66,7 +66,8 @@ def editar(id):
     if 'usuario_logado' not in session or session['usuario_logado'] == None:
         return redirect(url_for('login', proxima=url_for('editar')))
     jogo = jogo_dao.busca_por_id(id)
-    return render_template('editar.html', titulo='Editando Jogo', jogo=jogo)
+    return render_template('editar.html', titulo='Editando Jogo', jogo=jogo
+                           ,capa_jogo = f'capa{id}.jpg')
 
 
 @app.route('/atualizar', methods=['POST', ])
@@ -114,5 +115,7 @@ def logout():
     flash('Nenhum usuário logado!')
     return redirect(url_for('index'))
 
-
+@app.route('/uploads/<nome_arquivo>')
+def imagem(nome_arquivo):
+    return send_from_directory('uploads',nome_arquivo)
 app.run(debug=True)
