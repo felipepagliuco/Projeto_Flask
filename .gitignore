@@ -105,7 +105,6 @@ ENV/
 env.bak/
 venv.bak/
 pip-selfcheck.json
-static/
 uploads/
 
 # End of https://www.gitignore.io/api/pycharm,virtualenv
